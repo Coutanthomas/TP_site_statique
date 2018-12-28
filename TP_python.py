@@ -5,7 +5,6 @@ parser.add_argument("-i", "--input_directory",
                     action="store",
                     type=str,
                     required=True,
-                    #dest=input,
                     help="Input directory, please make sure you have insert the input directory, containing the markdown files.",
                     )
 parser.add_argument("-o", "--output-directory",
