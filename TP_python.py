@@ -62,22 +62,22 @@ def marktohtml(line):
         html_line = line.split(" ")
         tour = []
         cont = []
-        co = ""
+        toto = ""
         new = ""
         for i in html_line:
             if i.count("http://"):
-                co = co + "0"
-                new ="<a href=\"" + i + ">" + i +"</a>"
+                toto = toto + "0"
+                new ="<a href=\"" + i + "\">" + i +"</a>"
                 cont.append(len(tour))
             tour.append(1)
-        k = co.count("0")
+        k = toto.count("0")
         while k > 0:
             html_line[cont[k-1]] = new
             k -= 1
         html_line = " ".join(html_line)
     else:
         html_line = line
-    return html_line + "\n"
+    return html_line
     
 
 def convert(path):
@@ -104,7 +104,23 @@ def savnew():
         i += 1
     print ("done")
 
-
+def insert_in_template():
+    i = 0
+    att =""
+    with open(args.template_directory, "r") as fichier:
+        for line in fichier:
+            if line.count("<REPLACE_ME>"):
+                with open(args.output_directory + newname1(listmd[0]), "r") as fichier_o:
+                    for line1 in fichier_o:
+                        att = att + line1
+                i = 1   
+            att = att + line
+    with open(args.output_directory + newname1(listmd[0]), "w") as fichier_S:
+        fichier_S.writelines(att)
+    if i != 1:
+        print("We don't find <REPLACE_ME>")
+       
 listmd = glob.glob(args.input_directory + "/*.md")
 savnew()
+insert_in_template()
 
