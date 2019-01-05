@@ -35,9 +35,9 @@ if not os.path.exists(args.input_directory):
 if not os.path.exists(args.output_directory):
     print("creating output_directory " + args.output_directory)
     os.makedirs(args.output_directory)
-else:
-    print(args.output_directory + " The output directory already exist, please enter a new directory name.")
-    sys.exit()
+#else:
+    #print(args.output_directory + " The output directory already exist, please enter a new directory name.")
+    #sys.exit()
     #print(args.output_directory + " : The path you chose does not exist. Please make sure you have insert a write output directory")
 
 
@@ -56,23 +56,46 @@ def marktohtml(line):
         html_line = "<h2>" + line[2:].rstrip() + "</h2>"
     elif line[:1] == "#":
         html_line = "<h1>" + line[1:].rstrip() + "</h1>"
+    elif line[:1] == "*":
+        if line.count("*")%2 == 1:
+            html_line = "<il>" + line[1:] + "</il>"
     elif line.count("*") > 1:
         html_line = "<em>".join(line.split("*"))
+        html_line = html_line.split(" ")
+        deb = ""
+        tour = []
+        cont = []
+        new = ""
+        new1 = []
+        for i in html_line:
+            if i.count("<em>") == 2:
+                deb = deb + "0"
+                new = i[:-4] + "</em>"
+                new1.append(new)
+                cont.append(len(tour))
+            tour.append(1)
+        k = deb.count("0")
+        while k > 0:
+            html_line[cont[k-1]] = new1[k-1]
+            k -= 1
+        html_line = " ".join(html_line)         
     elif line.count("http://") >= 1:
         html_line = line.split(" ")
         tour = []
         cont = []
         toto = ""
         new = ""
+        new1 = []
         for i in html_line:
             if i.count("http://"):
                 toto = toto + "0"
                 new ="<a href=\"" + i + "\">" + i +"</a>"
+                new1.append(new)
                 cont.append(len(tour))
             tour.append(1)
         k = toto.count("0")
         while k > 0:
-            html_line[cont[k-1]] = new
+            html_line[cont[k-1]] = new1[k-1]
             k -= 1
         html_line = " ".join(html_line)
     else:
@@ -91,7 +114,6 @@ def convert(path):
 def newname1(listmd):
     name = ""
     name = name + (os.path.basename(listmd))[:-2] + "html"
-    #print(name)
     return name
 
 
@@ -106,7 +128,7 @@ def savnew():
 
 def insert_in_template():
     i = 0
-    att =""
+    att = ""
     with open(args.template_directory, "r") as fichier:
         for line in fichier:
             if line.count("<REPLACE_ME>"):
